@@ -22,14 +22,13 @@ class OptFunction:
         self.order = int(self.gradf is None) + int(self.hessf is None)
 
     def __call__(self, x, order=0):
-        print(order, self.order)
         if order > self.order:
             raise ValueError(f"Function does not support calls of order {order}")
         fx = self.f(x)
         if order == 0:
             return (fx,)
         else:
-            gradfx = self.gradfx(x)
+            gradfx = self.gradf(x)
             if order == 1:
                 return (fx, gradfx)
             else:
