@@ -11,7 +11,7 @@ def ex_f1(x):
     """
     Example function 1: the norm of a 2D vector.
     """
-    return x[0] * x[0] + x[1] * x[1]
+    return x.T.dot(x)
 
 def ex_gradf1(x):
     """
@@ -26,12 +26,14 @@ def conditioned_quadratic(cond=50):
     Produces a quadratic form which has a specified condition number. The
     quadratic form has some random variation and a random rotation.
     """
-    A = np.array([[cond, 0], [0, 1]]) + np.random.randn(2,2)
+    A = np.array([[cond, 0], [0, 1]])
     theta = np.random.rand() * 2 * np.pi
-    A = rotation_matrix(theta).dot(A)
+    forward_rot = rotation_matrix(theta)
+    backward_rot = rotation_matrix(-theta)
+    A = backward_rot.dot(A.dot(forward_rot))
 
     def f(x):
-        return x.dot(A.dot(x))
+        return x.T.dot(A.dot(x))
 
     def gradf(x):
         return (A + A.T).dot(x)

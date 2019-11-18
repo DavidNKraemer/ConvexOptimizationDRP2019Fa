@@ -19,7 +19,7 @@ class OptFunction:
         self.f = f
         self.gradf = gradf
         self.hessf = hessf
-        self.order = int(self.gradf is None) + int(self.hessf is None)
+        self.order = 2 if hessf is not None else 1 if gradf is not None else 0
 
     def __call__(self, x, order=0):
         if order > self.order:

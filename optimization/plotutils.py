@@ -6,7 +6,7 @@ class PlaneIterationPlotter:
     def __init__(self, f, **kwargs):
         self.f = f
         self.kwargs = kwargs
-        self.fig, self.ax = plt.subplots(1,1)
+        self.fig, self.ax = plt.subplots(1, 1, figsize=(10,10))
 
         self._configure_kwargs()
 
@@ -21,10 +21,10 @@ class PlaneIterationPlotter:
         self.ax.spines['bottom'].set_position('zero')
         self.ax.spines['left'].set_position('zero')
         self.ax.spines['right'].set_color('none')
+        self.ax.set_aspect('equal')
 
 
     def plot_contours(self, *args, **kwargs):
-
         x, y = np.linspace(*self.kwargs['xlim']), np.linspace(*self.kwargs['ylim'])
         X, Y = np.meshgrid(x, y)
 
@@ -32,13 +32,11 @@ class PlaneIterationPlotter:
             [self.f(np.array([X[i,j], Y[i,j]])) for j in range(self.kwargs['steps'])]
             for i in range(self.kwargs['steps'])
         ]).reshape(X.shape)
-        print("Z", Z.shape)
 
         self.ax.contour(X, Y, Z, *args, **kwargs)
 
-    def plot_points(self, x, y, *args, **kwargs):
-
-        self.ax.plot(x, y, *args, **kwargs)
+    def plot_points(self, x, *args, **kwargs):
+        self.ax.plot(x[:,0], x[:,1], *args, **kwargs)
 
     def show(self, *args, **kwargs):
         self.fig.show(*args, **kwargs)

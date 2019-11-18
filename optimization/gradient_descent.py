@@ -1,8 +1,7 @@
 import numpy as np
-from optfunction import OptFunction
+from optfunction import OptFunction 
 
-
-def backtracking_line_search(optfun, x, direction, alpha=0.35, beta=0.95):
+def backtracking_line_search(optfun, x, direction, alpha=0.45, beta=0.95):
     """
     Given a descent direction `direction` for the function `optfun` at `x` in
     the domain of `optfun`, and given parameters `alpha` and `beta`, return a
@@ -10,7 +9,7 @@ def backtracking_line_search(optfun, x, direction, alpha=0.35, beta=0.95):
     """
     t = 1.
     current_val, current_grad = optfun(x, order=1)
-    while optfun(x + t * direction, order=0) > current_val + alpha * t * np.dot(current_grad.T, direction):
+    while optfun(x + t * direction) > current_val + alpha * t * current_grad.T.dot(direction):
         t *= beta
     return t
 
@@ -41,12 +40,13 @@ def gradient_descent(optfun, x0, iterations=100, tolerance=1e-5):
     points[0] = x0
     for step in range(iterations):
         value, direction = optfun(points[step], order=1)
+        direction *= -1.
         stepsize = backtracking_line_search(optfun, points[step], direction)
         points[step+1] = points[step] + stepsize * direction
         xerrors[step] = np.linalg.norm(points[step+1] - points[step])
         ferrors[step] = np.abs(value - optfun(points[step+1], order=0))
 
-        if np.min(xerrors[step], ferrors[step]) < tolerance:
+        if min(xerrors[step], ferrors[step]) < tolerance:
             break
 
     return points[:step+1], ferrors[:step], xerrors[:step]
